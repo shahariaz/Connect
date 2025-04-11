@@ -1,0 +1,21 @@
+{
+  "name": "connect",
+  "version": "0.0.1",
+  "description": "Connect To the World",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/shahariaz/connect"
+  },
+  "keywords": [
+    "bknd",
+    "express",
+    "nodejs",
+    "typescript"
+  ],
+  "author": "Shahariaz Ahammed",
+  "license": "ISC"
+}
