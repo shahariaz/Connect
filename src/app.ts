@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import { ConnectServer } from "./setupServer";
 import connectDB from "./setupDatabase";
+import { config } from "@root/config";
 class Application {
   private static instance: Application;
 
@@ -14,10 +15,15 @@ class Application {
   }
 
   public initialize(): void {
+    this.loadConfig();
     connectDB();
     const app: Express = express();
     const server: ConnectServer = new ConnectServer(app);
     server.start();
+  }
+  private loadConfig(): void {
+    config.validateConfig();
+    config.cloudinaryConfig();
   }
 }
 
