@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "@socket.io/redis-adapter": "^8.3.0",
+    "bcryptjs": "^3.0.2",
     "bunyan": "^1.8.15",
     "cloudinary": "^2.6.0",
     "compression": "^1.8.0",
