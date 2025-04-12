@@ -1,4 +1,4 @@
-import { config, config } from "@root/config";
+import { config } from "@root/config";
 import Logger from "bunyan";
 import cloudinary, {
   UploadApiErrorResponse,
