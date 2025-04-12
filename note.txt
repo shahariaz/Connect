@@ -1,0 +1,3 @@
+1) We are using socket.io/redis-adapter for sync multiple socket connection from differnt or multiple Node instance... I will create a blog about it
+ https://socket.io/docs/v4/using-multiple-nodes/
+  https://github.com/socketio/socket.io-redis-adapter
