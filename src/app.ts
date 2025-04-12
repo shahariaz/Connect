@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import { ConnectServer } from "./setupServer";
 import connectDB from "./setupDatabase";
 import { config } from "@root/config";
+
 class Application {
   private static instance: Application;
 
@@ -11,6 +12,7 @@ class Application {
     if (!Application.instance) {
       Application.instance = new Application();
     }
+
     return Application.instance;
   }
 
