@@ -6,61 +6,76 @@ import { ServerError } from "@global/helpers/error-handler";
 
 const log: Logger = config.createLogger("UserCache");
 
-export class UserCache extends BaseCache {
+class UserCache extends BaseCache {
   constructor() {
     super("UserCache");
   }
 
   public async saveUserToCache(
     key: string,
-    userId: string,
+    userUId: string,
     createdUser: IUserDocument
   ): Promise<void> {
     const createdAt = new Date();
-
-    const dataToSave: Record<string, string> = {
-      _id: String(createdUser._id),
-      uId: String(createdUser.uId),
-      username: createdUser.username || "",
-      email: createdUser.email || "",
-      avatarColor: createdUser.avatarColor || "",
-      createdAt: createdAt.toISOString(),
-      postsCount: String(createdUser.postsCount),
-      blocked: JSON.stringify(createdUser.blocked),
-      blockedBy: JSON.stringify(createdUser.blockedBy),
-      profilePicture: createdUser.profilePicture,
-      followersCount: String(createdUser.followersCount),
-      followingCount: String(createdUser.followingCount),
-      notifications: JSON.stringify(createdUser.notifications),
-      social: JSON.stringify(createdUser.social),
-      work: createdUser.work || "",
-      location: createdUser.location || "",
-      school: createdUser.school || "",
-      quote: createdUser.quote || "",
-      bgImageVersion: createdUser.bgImageVersion || "",
-      bgImageId: createdUser.bgImageId || "",
+    const {
+      _id,
+      uId,
+      username,
+      email,
+      avatarColor,
+      blocked,
+      blockedBy,
+      postsCount,
+      profilePicture,
+      followersCount,
+      followingCount,
+      notifications,
+      work,
+      location,
+      school,
+      quote,
+      bgImageId,
+      bgImageVersion,
+      social,
+    } = createdUser;
+    const dataToSave = {
+      _id: `${_id}`,
+      uId: `${uId}`,
+      username: `${username}`,
+      email: `${email}`,
+      avatarColor: `${avatarColor}`,
+      createdAt: `${createdAt}`,
+      postsCount: `${postsCount}`,
+      blocked: JSON.stringify(blocked),
+      blockedBy: JSON.stringify(blockedBy),
+      profilePicture: `${profilePicture}`,
+      followersCount: `${followersCount}`,
+      followingCount: `${followingCount}`,
+      notifications: JSON.stringify(notifications),
+      social: JSON.stringify(social),
+      work: `${work}`,
+      location: `${location}`,
+      school: `${school}`,
+      quote: `${quote}`,
+      bgImageVersion: `${bgImageVersion}`,
+      bgImageId: `${bgImageId}`,
     };
 
     try {
-      if (!this.client.isOpen) {
+      if (!this?.client?.isOpen) {
         await this.client.connect();
-        log.info("Redis client connected");
       }
-
-      const pipeline = this.client.multi();
-      pipeline.zAdd("user", {
-        score: parseInt(userId, 10),
-        value: key,
+      await this.client.ZADD("user", {
+        score: parseInt(userUId, 10),
+        value: `${key}`,
       });
-
-      const userKey = `user:${key}`;
-      pipeline.hSet(userKey, dataToSave);
-
-      await pipeline.exec();
-      log.info(`User data cached successfully for userId: ${userId}`);
+      for (const [itemKey, itemValue] of Object.entries(dataToSave)) {
+        await this.client.HSET(`users:${key}`, `${itemKey}`, `${itemValue}`);
+      }
     } catch (error) {
-      log.error({ err: error, userId, key }, "Error saving user to cache");
-      throw new ServerError("Internal server error. Please try again later.");
+      log.error(error);
+      throw new ServerError("Server error. Try again.");
     }
   }
 }
+export const userCache = new UserCache();
