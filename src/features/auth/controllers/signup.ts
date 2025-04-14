@@ -12,7 +12,8 @@ import { config } from "@root/config";
 import { userCache } from "@service/redis/user.cache";
 import Logger from "bunyan";
 import { UploadApiResponse } from "cloudinary";
-
+import { omit } from "lodash";
+import { authQueue } from "@service/queue/auth.queue";
 const log: Logger = config.createLogger("signupController");
 
 export class SignUp {
@@ -56,6 +57,9 @@ export class SignUp {
     );
     userDataForCache.profilePicture = `https://res.cloudinary.com/dyamr9ym3/image/upload/v${result.version}/${userObjectId}`;
     await userCache.saveUserToCache(`${userObjectId}`, uId, userDataForCache);
+    // Add to queue to store in database
+    omit(userDataForCache, ["uId", "username", "email", "avatarColor"]);
+    authQueue.addAuthUserJob("addAuthUserToDB", { value: authData });
     res.status(201).json({
       message: "User created successfully",
       user: {
