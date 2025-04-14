@@ -14,6 +14,7 @@ import Logger from "bunyan";
 import { UploadApiResponse } from "cloudinary";
 import { omit } from "lodash";
 import { authQueue } from "@service/queue/auth.queue";
+import { userQueue } from "@service/queue/user.queue";
 const log: Logger = config.createLogger("signupController");
 
 export class SignUp {
@@ -59,7 +60,12 @@ export class SignUp {
     await userCache.saveUserToCache(`${userObjectId}`, uId, userDataForCache);
     // Add to queue to store in database
     omit(userDataForCache, ["uId", "username", "email", "avatarColor"]);
+    //add AuthData to queue to store in database
     authQueue.addAuthUserJob("addAuthUserToDB", { value: authData });
+    //add UserData to queue to store in database
+    userQueue.addUserJob("addUserToDB", { value: userDataForCache });
+
+    //response
     res.status(201).json({
       message: "User created successfully",
       user: {
