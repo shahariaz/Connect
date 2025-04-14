@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Request, Response } from "express";
+import JWT from "jsonwebtoken";
 import { joiValidation } from "@global/decorators/joi-validation";
 import { signupSchema } from "@auth/schemas/signup";
 import { IAuthDocument, ISignUpData } from "@auth/interfaces/auth.interface";
@@ -63,8 +64,10 @@ export class SignUp {
     //add AuthData to queue to store in database
     authQueue.addAuthUserJob("addAuthUserToDB", { value: authData });
     //add UserData to queue to store in database
-    userQueue.addUserJob("addUserToDB", { value: userDataForCache });
-
+    userQueue.addUserToDB("addUserToDB", { value: userDataForCache });
+    //sign JWT token
+    const userJwt: string = SignUp.prototype.signToken(authData, userObjectId);
+    req.session = { jwt: userJwt };
     //response
     res.status(201).json({
       message: "User created successfully",
@@ -78,7 +81,18 @@ export class SignUp {
       },
     });
   }
-
+  private signToken(data: IAuthDocument, userObjectId: ObjectId): string {
+    return JWT.sign(
+      {
+        userId: userObjectId,
+        uId: data.uId,
+        email: data.email,
+        username: data.username,
+        avatarColor: data.avatarColor,
+      },
+      config.JWT_TOKEN!
+    );
+  }
   private signupData(data: ISignUpData): IAuthDocument {
     const { _id, uId, email, username, password, avatarColor } = data;
     return {

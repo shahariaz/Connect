@@ -5,7 +5,7 @@ import Logger from "bunyan";
 
 class UserWorker {
   log: Logger = config.createLogger("UserWorker");
-  async addUserToDB(job: Job, done: DoneCallback) {
+  async addUserToDB(job: Job, done: DoneCallback): Promise<void> {
     try {
       const { value } = job.data;
       await userService.createUser(value);
