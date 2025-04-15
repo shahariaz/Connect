@@ -53,6 +53,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/hpp": "^0.2.6",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/lodash": "^4.17.16",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",

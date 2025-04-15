@@ -5,8 +5,9 @@ import { ExpressAdapter } from "@bull-board/express";
 import { config } from "@root/config";
 import Logger from "bunyan";
 import { IAuthJob } from "../../../features/auth/interfaces/auth.interface";
+import { IUserDocument, IUserJob } from "@user/interfaces/user.interface";
 
-type IBaseJobData = IAuthJob;
+type IBaseJobData = IAuthJob | IUserJob;
 
 let bullAdapters: BullAdapter[] = [];
 export let serverAdapter: ExpressAdapter;
