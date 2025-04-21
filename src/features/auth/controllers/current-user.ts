@@ -11,7 +11,7 @@ export class CurrentUser {
     const cachedUser: IUserDocument = (await userCache.getUserFromCache(
       `${req.currentUser?.userId}`
     )) as IUserDocument;
-    const existingUser: IUserDocument = cachedUser
+    const existingUser = cachedUser
       ? cachedUser
       : ((await userService.getUserById(
           `${req.currentUser?.userId}`
