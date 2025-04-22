@@ -31,5 +31,24 @@ class AuthService {
     const user: IAuthDocument | null = await AuthModel.findById(authId).exec();
     return user;
   }
+  public async getUserByEmail(email: string) {
+    const user: IAuthDocument | null = await AuthModel.findOne({
+      email,
+    }).exec();
+    return user;
+  }
+  public async updatePasswordToken(
+    authId: string,
+    token: string,
+    exprireDate: number
+  ): Promise<void> {
+    await AuthModel.updateOne(
+      { _id: authId },
+      {
+        passwordResetToken: token,
+        passwordResetExpires: exprireDate,
+      }
+    ).exec();
+  }
 }
 export const authService: AuthService = new AuthService();
