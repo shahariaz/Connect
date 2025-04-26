@@ -29,7 +29,7 @@ export class Password {
     await authService.updatePasswordToken(
       `${existingUser._id}`,
       token,
-      Date.now() * 60 * 60 * 100
+      Date.now() * 60 * 60 * 1000
     );
     const resetLink = `${config.CLIENT_URL}/reset-password?token=${token}`;
     const template: string = forgotPasswordTemplate.passwordResetTemplate(
