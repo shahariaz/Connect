@@ -22,6 +22,7 @@ import "express-async-errors";
 import { config } from "@root/config";
 import applicationRoutes from "@root/routes";
 import { CustomError, IErrorResponse } from "@global/helpers/error-handler";
+import { SocketIOPostHandler } from "@socket/post";
 
 const SERVER_PORT = 8080;
 const log: Logger = config.createLogger("server");
@@ -150,5 +151,8 @@ export class ConnectServer {
     });
   }
 
-  private socketIOConnections(io: Server): void {}
+  private socketIOConnections(io: Server): void {
+    const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+    postSocketHandler.listen();
+  }
 }
